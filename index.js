@@ -10,6 +10,7 @@ async function agentsRender(div){
         let agentDiv = document.createElement('div')
         let label = document.createElement('label')
         let selectElem = document.createElement('select')
+        selectElem.setAttribute('name','location')
         label.textContent=`${item.location}`
         item.agents.forEach((item)=>{
             selectElem.innerHTML+=`<option value='${item}'>${item}</option>`
