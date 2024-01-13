@@ -4,7 +4,8 @@ async function getAgents(){
 }
 
 //renders HTML
-async function agentsRender(div){
+async function renderAgents(div){
+    div.innerHTML=``
     let agents = await getAgents()
     agents.forEach((item)=>{
         let agentDiv = document.createElement('div')
