@@ -15,11 +15,11 @@ function getSiteId(){
     return siteId
 }
 async function getAgents(){
-    let response = await fetch(`http://localhost:3500/api/agents?siteId=${getSiteId()}`)
+    let response = await fetch(`https://bralessnation.com/api/agents?siteId=${getSiteId()}`)
     return await response.json()
 }
 async function getSiteConfig(){
-    let response = await fetch(`http://localhost:3500/api/getConfig?siteId=${getSiteId()}`)
+    let response = await fetch(`https://bralessnation.com/api/getConfig?siteId=${getSiteId()}`)
     return await response.json()
 }
 async function getPickupMtaaniCost(isOn,price){
@@ -92,7 +92,7 @@ async function availabilityToggleFunc(event,dropOffpointDiv,pickupMtaaniAgents,a
     dropOffpointDiv.style.display='flex'
     pickupMtaaniAgents.innerHTML='Loading...'
     if(event.target.checked == true){
-        await fetch(`http://localhost:3500/api/toggleAvailability?siteId=${getSiteId()}`,{
+        await fetch(`https://bralessnation.com/api/toggleAvailability?siteId=${getSiteId()}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ async function renderAdminModal(isOn,agents){
     document.body.appendChild(modalBackground)
     modal.innerHTML=`<h1>Loaading...</h1>`
     modal.innerHTML=`
-        <form action='http://localhost:3500/api/config?siteId=${getSiteId()}' method='post'>
+        <form action='https://bralessnation.com/api/config?siteId=${getSiteId()}' method='post'>
             <div>
                 <label>Work with Pickup Mtaani:</label>
                 <input id='availability' name='available' type='checkbox'>
