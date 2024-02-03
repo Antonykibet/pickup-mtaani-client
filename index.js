@@ -161,7 +161,7 @@ window.getPickupMtaaniCost = async function(){
     return price
 }
 
-window.pickUpMtaaniOption = async function(selectElem,div,priceDiv=null) {
+window.pickUpMtaaniOption = async function(deliveryOptions,agentsSection,priceDiv=null) {
     let mainDropdown = document.createElement('div')
     mainDropdown.style.cssText = 'margin-top:12px;border:solid 1px;display:flex;justify-content:space-between;'
     let agentList = document.createElement('div')
@@ -185,14 +185,14 @@ window.pickUpMtaaniOption = async function(selectElem,div,priceDiv=null) {
     let mtaaniOption =document.createElement('option')
     mtaaniOption.value='pickupMtaani'
     mtaaniOption.innerText='Pick up Mtaani'
-    selectElem.appendChild(mtaaniOption)
-    selectElem.addEventListener('change', function() {
+    deliveryOptions.appendChild(mtaaniOption)
+    deliveryOptions.addEventListener('change', function() {
         if (this.value === 'pickupMtaani') {
             mainDropdown.innerHTML=`
                 Select agent
                 <i class="bi bi-chevron-compact-down"></i>
                 `
-            agentOptionsRender(div,agents); 
+            agentOptionsRender(agentList,agents); 
         }else{
             mainDropdown.innerHTML=''
             agentList.innerHTML=''
