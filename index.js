@@ -42,15 +42,16 @@ function agentOptionsRender(div,agents){
 function labelElementCreator(div,item){
     let labelDropdown = document.createElement('div');
     labelDropdown.classList.add('labelDropdown')
+    labelDropdown.setAttribute('id',`${item.location}`)
     labelDropdown.textContent = `${item.location}`;
-    labelDropdown.innerHTML+=`<i style='margin-left:24px;' class="bi bi-caret-down-fill"></i>`
+    labelDropdown.innerHTML+=`<i id='${item.location}' style='margin-left:24px;' class="bi bi-caret-down-fill"></i>`
     labelDropdown.style.cssText='margin-top:8px;display:flex;justify-content:space-between;'
     div.append(labelDropdown);
-    labelDropdown.addEventListener('click',()=>{
+    labelDropdown.addEventListener('click',(event)=>{
         let labelDropdowns = document.querySelectorAll('.labelDropdown')
-        labelDropdowns.forEach((item)=>{
-            if(event.target.textContent === item.textContent) return
-            item.remove()
+        labelDropdowns.forEach((label)=>{
+            if(event.target.getAttribute('id') === label.getAttribute('id')) return
+            label.remove()
         })
         selectElementCreator(div,item)
     } );
