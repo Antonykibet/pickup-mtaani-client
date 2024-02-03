@@ -1,6 +1,6 @@
 {
   "name": "pickup-mtaani-client",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A js library for rendering Pick up mtaani authorized agents",
   "main": "index.js",
   "scripts": {

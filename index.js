@@ -41,11 +41,17 @@ function agentOptionsRender(div,agents){
 }
 function labelElementCreator(div,item){
     let labelDropdown = document.createElement('div');
+    labelDropdown.classList.add('labelDropdown')
     labelDropdown.textContent = `${item.location}`;
     labelDropdown.innerHTML+=`<i style='margin-left:24px;' class="bi bi-caret-down-fill"></i>`
     labelDropdown.style.cssText='margin-top:8px;display:flex;justify-content:space-between;'
     div.append(labelDropdown);
     labelDropdown.addEventListener('click',()=>{
+        let labelDropdowns = document.querySelectorAll('.labelDropdown')
+        labelDropdowns.forEach((item)=>{
+            if(event.target.textContent === item.textContent) return
+            item.remove()
+        })
         selectElementCreator(div,item)
     } );
 }
@@ -165,15 +171,15 @@ window.pickUpMtaaniOption = async function(deliveryOptions,agentsSection,priceDi
     let mainDropdown = document.createElement('div')
     mainDropdown.style.cssText = 'margin-top:12px;border:solid 1px;display:flex;justify-content:space-between;'
     let agentList = document.createElement('div')
-    agentList.style.cssText='display:none;'
+    //agentList.style.cssText='display:none;'
     agentsSection.append(mainDropdown,agentList)
-    mainDropdown.addEventListener('click',()=>{
+    /*mainDropdown.addEventListener('click',()=>{
         if(agentList.style.display !== 'none'){
             agentList.style.display='none'
         }else{
             agentList.style.display='block'
         }
-    })
+    })*/
     let agents = await getAgents()
     let {isOn,price} =await getSiteConfig()
     if(agents==''){
@@ -188,13 +194,13 @@ window.pickUpMtaaniOption = async function(deliveryOptions,agentsSection,priceDi
     deliveryOptions.appendChild(mtaaniOption)
     deliveryOptions.addEventListener('change', function() {
         if (this.value === 'pickupMtaani') {
-            mainDropdown.innerHTML=`
+           /* mainDropdown.innerHTML=`
                 Select agent
                 <i class="bi bi-chevron-compact-down"></i>
-                `
+                `*/
             agentOptionsRender(agentList,agents); 
         }else{
-            mainDropdown.innerHTML=''
+            //mainDropdown.innerHTML=''
             agentList.innerHTML=''
         }
     }); 
