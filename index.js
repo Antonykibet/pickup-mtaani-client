@@ -50,20 +50,21 @@ function labelElementCreator(div,item){
     } );
 }
 function selectElementCreator(div,item){
-    // Remove any existing select elements
     let existingSelect = document.querySelector('.mtaaniSelect');
     if (existingSelect) {
         existingSelect.remove()
     }
-    // Create a new select element
-    let selectElem = document.createElement('select');
-    selectElem.classList.add('mtaaniSelect')
-    //selectElem.style.cssText='width:50%;'
-    selectElem.setAttribute('name', 'location');
+    let agentsOptionsDiv = document.createElement('div');
+    agentsOptionsDiv.style.cssText='max-height:30vh;overflow-y:auto;border-radius:8px;padding:4px;'
+    agentsOptionsDiv.classList.add('mtaaniSelect')
     item.agents.forEach((agent) => {
-        selectElem.innerHTML += `<option value='${item.location}:${agent}'>${agent}</option>`;
+        agentsOptionsDiv.innerHTML += `
+        <div style='font-size:12px;'>
+        <input type="radio" id="${agent}" name="agentLocation" value="${agent}">
+        <label  for="${agent}">${agent}</label><br>
+        </div>`
     });
-    div.appendChild(selectElem);
+    div.appendChild(agentsOptionsDiv);
 }
 
 
@@ -161,6 +162,18 @@ window.getPickupMtaaniCost = async function(){
 }
 
 window.pickUpMtaaniOption = async function(selectElem,div,priceDiv=null) {
+    let mainDropdown = document.createElement('div')
+    mainDropdown.style.cssText = 'margin-top:12px;border:solid 1px;display:flex;justify-content:space-between;'
+    let agentList = document.createElement('div')
+    agentList.style.cssText='display:none;'
+    agentsSection.append(mainDropdown,agentList)
+    mainDropdown.addEventListener('click',()=>{
+        if(agentList.style.display !== 'none'){
+            agentList.style.display='none'
+        }else{
+            agentList.style.display='block'
+        }
+    })
     let agents = await getAgents()
     let {isOn,price} =await getSiteConfig()
     if(agents==''){
@@ -175,9 +188,14 @@ window.pickUpMtaaniOption = async function(selectElem,div,priceDiv=null) {
     selectElem.appendChild(mtaaniOption)
     selectElem.addEventListener('change', function() {
         if (this.value === 'pickupMtaani') {
+            mainDropdown.innerHTML=`
+                Select agent
+                <i class="bi bi-chevron-compact-down"></i>
+                `
             agentOptionsRender(div,agents); 
         }else{
-            div.innerHTML=''
+            mainDropdown.innerHTML=''
+            agentList.innerHTML=''
         }
     }); 
 }
