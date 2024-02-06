@@ -39,23 +39,7 @@ function agentOptionsRender(div,agents){
         div.append(agentDiv);
     });
 }
-function labelElementCreator(div,item){
-    let labelDropdown = document.createElement('div');
-    labelDropdown.classList.add('labelDropdown')
-    labelDropdown.setAttribute('id',`${item.location}`)
-    labelDropdown.textContent = `${item.location}`;
-    labelDropdown.innerHTML+=`<i id='${item.location}' style='margin-left:24px;' class="bi bi-caret-down-fill"></i>`
-    labelDropdown.style.cssText='margin-top:8px;display:flex;justify-content:space-between;'
-    div.append(labelDropdown);
-    labelDropdown.addEventListener('click',(event)=>{
-        let labelDropdowns = document.querySelectorAll('.labelDropdown')
-        labelDropdowns.forEach((label)=>{
-            if(event.target.getAttribute('id') === label.getAttribute('id')) return
-            label.remove()
-        })
-        selectElementCreator(div,item)
-    } );
-}
+
 function selectElementCreator(div,item){
     let existingSelect = document.querySelector('.mtaaniSelect');
     if (existingSelect) {
@@ -167,20 +151,40 @@ window.getPickupMtaaniCost = async function(){
     let {price} =await getSiteConfig()
     return price
 }
+function addPickupMtaaniOption(availableOptions){
+    let option = document.createElement('option')
+    option.value='pickupMtaani'
+    option.textContent='Pickup mtaani'
+    availableOptions.appendChild(option)
+}
+function locationOptionsCreator(agents,locationSelect){
+    agents.forEach((item)=>{
+        let option = document.createElement('option')
+        option.textContent=item.location
+        option.value=item.location
+        locationSelect.appendChild(option)
+    })
+}
 
-window.pickUpMtaaniOption = async function(deliveryOptions,agentsSection,priceDiv=null) {
-    let mainDropdown = document.createElement('div')
-    mainDropdown.style.cssText = 'margin-top:12px;border:solid 1px;display:flex;justify-content:space-between;'
-    let agentList = document.createElement('div')
-    //agentList.style.cssText='display:none;'
-    agentsSection.append(mainDropdown,agentList)
-    /*mainDropdown.addEventListener('click',()=>{
-        if(agentList.style.display !== 'none'){
-            agentList.style.display='none'
-        }else{
-            agentList.style.display='block'
-        }
-    })*/
+function renderRoadsOptions(agents,displaySection){
+    let locationSelect = document.createElement('select')
+    locationSelect.innerHTML=`<option>Select agents</option>`
+    locationOptionsCreator(agents,locationSelect)
+    let agentsSection = document.createElement('div')
+    agentsSection.style.cssText='max-height:30vh;overflow-y:auto;font-size:12px;padding:4px;'
+    displaySection.append(locationSelect,agentsSection)
+    locationSelect.addEventListener('change',(event)=>{
+        agentsSection.innerHTML=''
+        let location = event.target.value
+        let item = agents.find(item=> item.location === location)
+        item.agents.forEach((item)=>{
+            agentsSection.innerHTML+=`<input type='radio' id='${item}' name='pickupMtaaniAgent' value='${item}'>`
+            agentsSection.innerHTML+=`<label for='${item}'>${item}</label> <br>`
+        })
+    })
+}
+
+window.pickUpMtaaniOption = async function(deliveryOptions,displaySection,priceDiv=null) {
     let agents = await getAgents()
     let {isOn,price} =await getSiteConfig()
     if(agents==''){
@@ -189,20 +193,11 @@ window.pickUpMtaaniOption = async function(deliveryOptions,agentsSection,priceDi
     if(priceDiv!=null){
         priceDiv.innerText=await getPickupMtaaniCost(isOn,price)
     }
-    let mtaaniOption =document.createElement('option')
-    mtaaniOption.value='pickupMtaani'
-    mtaaniOption.innerText='Pick up Mtaani'
-    deliveryOptions.appendChild(mtaaniOption)
-    deliveryOptions.addEventListener('change', function() {
-        if (this.value === 'pickupMtaani') {
-           /* mainDropdown.innerHTML=`
-                Select agent
-                <i class="bi bi-chevron-compact-down"></i>
-                `*/
-            agentOptionsRender(agentList,agents); 
-        }else{
-            //mainDropdown.innerHTML=''
-            agentList.innerHTML=''
+    addPickupMtaaniOption(deliveryOptions)
+    deliveryOptions.addEventListener('change',(event)=>{
+        if(event.target.value=='pickupMtaani'){
+            renderRoadsOptions(agents,displaySection)
         }
-    }); 
+    })
+    
 }
