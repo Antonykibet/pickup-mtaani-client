@@ -168,7 +168,7 @@ function locationOptionsCreator(agents,locationSelect){
 
 function renderRoadsOptions(agents,displaySection){
     let locationSelect = document.createElement('select')
-    locationSelect.innerHTML=`<option>Select agents</option>`
+    locationSelect.innerHTML=`<option>Select Location</option>`
     locationOptionsCreator(agents,locationSelect)
     let agentsSection = document.createElement('div')
     agentsSection.style.cssText='max-height:30vh;overflow-y:auto;font-size:12px;padding:4px;'
@@ -197,6 +197,8 @@ window.pickUpMtaaniOption = async function(deliveryOptions,displaySection,priceD
     deliveryOptions.addEventListener('change',(event)=>{
         if(event.target.value=='pickupMtaani'){
             renderRoadsOptions(agents,displaySection)
+        }else{
+            displaySection.innerHTML=''
         }
     })
     
