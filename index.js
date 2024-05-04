@@ -51,13 +51,44 @@ function selectElementCreator(div,item){
     item.agents.forEach((agent) => {
         agentsOptionsDiv.innerHTML += `
         <div style='font-size:12px;'>
-        <input type="radio" id="${agent}" name="agentLocation" value="${agent}">
-        <label  for="${agent}">${agent}</label><br>
+            <input class='agentRadioBtn' type="radio" id="${agent}" name="agentLocation" value="${agent}">
+            <label  for="${agent}">${agent}</label><br>
         </div>`
     });
     div.appendChild(agentsOptionsDiv);
+    agentsOptionsDiv.querySelectorAll('.agentRadioBtn').forEach((btn)=>{
+        btn.addEventListener('click',(event)=>{
+            alert('Aloo')
+        })
+    })
 }
 
+window.selectedPickupMtaaniAgent= null
+
+window.getPickupMtaaniCost = async function(){
+    let {price} =await getSiteConfig()
+    return price
+}
+
+window.pickUpMtaaniOption = async function(deliveryOptions,displaySection,priceDiv=null) {
+    let agents = await getAgents()
+    let {isOn,price} =await getSiteConfig()
+    if(agents==''){
+        return
+    }
+    if(priceDiv!=null){
+        priceDiv.innerText=await getPickupMtaaniCost(isOn,price)
+    }
+    addPickupMtaaniOption(deliveryOptions)
+    deliveryOptions.addEventListener('change',(event)=>{
+        if(event.target.value=='pickupMtaani'){
+            renderRoadsOptions(agents,displaySection)
+        }else{
+            displaySection.innerHTML=''
+        }
+    })
+    
+}
 
 
 
@@ -140,17 +171,6 @@ window.pickUpMtaaniAdmin = async function(adminbtn){
     })
 }
 
-
-
-
-
-
-
-
-window.getPickupMtaaniCost = async function(){
-    let {price} =await getSiteConfig()
-    return price
-}
 function addPickupMtaaniOption(availableOptions){
     let option = document.createElement('option')
     option.value='pickupMtaani'
@@ -178,28 +198,26 @@ function renderRoadsOptions(agents,displaySection){
         let location = event.target.value
         let item = agents.find(item=> item.location === location)
         item.agents.forEach((item)=>{
-            agentsSection.innerHTML+=`<input type='radio' id='${item}' name='pickupMtaaniAgent' value='${item}'>`
-            agentsSection.innerHTML+=`<label for='${item}'>${item}</label> <br>`
+            const radioInput = document.createElement('input');
+            radioInput.setAttribute('type', 'radio');
+            radioInput.setAttribute('id', item);
+            radioInput.setAttribute('name', 'pickupMtaaniAgent');
+            radioInput.setAttribute('value', item);
+            
+            const label = document.createElement('label');
+            label.setAttribute('for', item);
+            label.textContent = item; // Set label text content
+            
+            agentsSection.appendChild(radioInput); // Append radio button to container
+            agentsSection.appendChild(label); // Append label to container
+            agentsSection.appendChild(document.createElement('br')); // Add a line break
+            
+            radioInput.addEventListener('click', handleClick);
+            //label.addEventListener('click', handleClick);
+
+            function handleClick() {
+                window.selectedPickupMtaaniAgent = item
+            }
         })
     })
-}
-
-window.pickUpMtaaniOption = async function(deliveryOptions,displaySection,priceDiv=null) {
-    let agents = await getAgents()
-    let {isOn,price} =await getSiteConfig()
-    if(agents==''){
-        return
-    }
-    if(priceDiv!=null){
-        priceDiv.innerText=await getPickupMtaaniCost(isOn,price)
-    }
-    addPickupMtaaniOption(deliveryOptions)
-    deliveryOptions.addEventListener('change',(event)=>{
-        if(event.target.value=='pickupMtaani'){
-            renderRoadsOptions(agents,displaySection)
-        }else{
-            displaySection.innerHTML=''
-        }
-    })
-    
 }
