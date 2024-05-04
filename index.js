@@ -1,19 +1,20 @@
-function generateRandomNumb() {
+/*function generateRandomNumb() {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
+}*/
 
-function generateSiteId(){
+function getSiteDomain(){
     let domainName=window.location.hostname
-    return `${domainName}:${generateRandomNumb()}`
+    return `${domainName}`
 }
 function getSiteId(){
-    let siteId = localStorage.getItem('siteId')
-    if(!siteId){
-        localStorage.setItem('siteId',generateSiteId())
-        return localStorage.getItem('siteId')
+    let domain = localStorage.getItem('siteId')
+    if(!domain){
+        localStorage.setItem('siteId',getSiteDomain())
+        domain = localStorage.getItem('siteId')
     }
-    return siteId
+    return domain
 }
+
 async function getAgents(){
     let response = await fetch(`https://bralessnation.com/api/agents?siteId=${getSiteId()}`)
     return await response.json()
@@ -35,7 +36,7 @@ function agentOptionsRender(div,agents){
     agents.forEach((item) => {
         let agentDiv = document.createElement('div');
         agentDiv.style.cssText = 'display:flex;flex-direction:column;'
-        labelElementCreator(agentDiv,item)
+        selectElementCreatorElementCreator(agentDiv,item)
         div.append(agentDiv);
     });
 }
@@ -56,11 +57,6 @@ function selectElementCreator(div,item){
         </div>`
     });
     div.appendChild(agentsOptionsDiv);
-    agentsOptionsDiv.querySelectorAll('.agentRadioBtn').forEach((btn)=>{
-        btn.addEventListener('click',(event)=>{
-            alert('Aloo')
-        })
-    })
 }
 
 window.selectedPickupMtaaniAgent= null
